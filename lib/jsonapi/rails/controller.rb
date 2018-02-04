@@ -69,7 +69,10 @@ module JSONAPI
           before_action(options) do |controller|
             # TODO(lucas): Fail with helpful error message if _jsonapi not
             #   present.
-            hash = controller.params[:_jsonapi].to_unsafe_hash
+            hash = controller.params[:_jsonapi]
+                             .to_unsafe_hash
+                             .with_indifferent_access
+
             ActiveSupport::Notifications
               .instrument('parse.jsonapi', payload: hash, class: klass) do
               JSONAPI::Parser::Resource.parse!(hash)
